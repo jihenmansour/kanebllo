@@ -2,8 +2,24 @@ import FloatingTriangle from "../components/FloatingTriangle";
 import Input from "../components/Input";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { signup } from "../features/auth/authActions";
+import store from "../store";
+
+type AppDispatch = typeof store.dispatch;
 
 const SignUpPage = () => {
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(signup({ name, email, password }));
+  };
   return (
     <div className="h-screen overflow-hidden relative flex items-center justify-center bg-gradient-to-r from-[#50A8A2] via-emerald-400 to-emerald-300">
       <FloatingTriangle size={"size-32"} delay={0} left={"10%"} />
@@ -32,19 +48,40 @@ const SignUpPage = () => {
             Enter your details to create your account
           </p>
         </div>
-
-        <Input name="Full name" />
-        <Input name="Email" />
-        <Input name="Password" />
-        <div className="flex flex-col items-center rounded-sm text-emerald-400  font-medium">
-          <button className="bg-white w-[80%] h-12 mb-3">Sign Up</button>
-          <p className="text-white">
-            Already have an account? &nbsp;
-            <Link to="/login" className="text-white hover:underline">
-              Login
-            </Link>
-          </p>
-        </div>
+        <form onSubmit={handleSignup}>
+          <Input
+            name="Full name"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+          />
+          <Input
+            name="Email"
+            type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+          />
+          <Input
+            name="Password"
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+          <div className="flex flex-col items-center rounded-sm text-emerald-400  font-medium">
+            <button className="bg-white w-[80%] h-12 mb-3">Sign Up</button>
+            <p className="text-white">
+              Already have an account? &nbsp;
+              <Link to="/login" className="text-white hover:underline">
+                Login
+              </Link>
+            </p>
+          </div>
+        </form>
       </motion.div>
     </div>
   );

@@ -6,5 +6,14 @@ export declare interface floatingTriangleInterface{
 }
 
 export declare interface inputInterface{
-    name: string
+    name: string,
+    type?: string,
+    value?: string,
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>)=>void
+}
+
+export declare interface userInterface{
+    name: string,
+    email: string,
+    password: string
 }
