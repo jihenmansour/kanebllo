@@ -15,5 +15,17 @@ export declare interface inputInterface{
 export declare interface userInterface{
     name: string,
     email: string,
+    isVerified: boolean,
+    verificationToken: string,
+    verificationTokenExpiresAt: Date,
+    _id: string,
+    lastLogin: Date,
+    createdAt: Date,
+    updatedAt: Date,
+}
+
+export declare interface loginInterface{
+    name: string,
+    email: string,
     password: string
 }

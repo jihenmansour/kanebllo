@@ -1,25 +1,35 @@
 import FloatingTriangle from "../components/FloatingTriangle";
 import Input from "../components/Input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signup } from "../features/auth/authActions";
-import store from "../store";
+import { AppDispatch, RootState } from "../store";
+import Spinner from "../components/Spinner";
 
-type AppDispatch = typeof store.dispatch;
 
 const SignUpPage = () => {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
-  const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {error, loading, signupSuccess} = useSelector((state: RootState) => state.auth)
+
+  useEffect(() => {
+    if(signupSuccess)  navigate('/verify-email');
+  }, [navigate, signupSuccess])
+  
+
+  const handleSignup =  (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(signup({ name, email, password }));
+     dispatch(signup({ name, email, password }));
   };
+
+
   return (
     <div className="h-screen overflow-hidden relative flex items-center justify-center bg-gradient-to-r from-[#50A8A2] via-emerald-400 to-emerald-300">
       <FloatingTriangle size={"size-32"} delay={0} left={"10%"} />
@@ -72,8 +82,11 @@ const SignUpPage = () => {
               setPassword(e.target.value);
             }}
           />
+           {error && <p className="text-red-600 mb-3">{error}</p>}
           <div className="flex flex-col items-center rounded-sm text-emerald-400  font-medium">
-            <button className="bg-white w-[80%] h-12 mb-3">Sign Up</button>
+            <button className="bg-white w-[80%] h-12 mb-3">
+             {loading?<Spinner/> : "Sign Up"   } 
+            </button>
             <p className="text-white">
               Already have an account? &nbsp;
               <Link to="/login" className="text-white hover:underline">

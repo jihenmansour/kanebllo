@@ -59,15 +59,19 @@ export const verifyEmail = async (req, res) => {
       verificationTokenExpiresAt: {$gt: Date.now()}
     });
 
+    if(code.length!==6){
+      throw new Error ("Code must be exactly 6 characters long")
+    }
+    
     if (!user) {
       throw new Error("Verification code is invalid or expired");
     }
-
+    
     user.isVerified = true;
     user.verificationToken = undefined;
     user.verificationTokenExpiresAt = undefined;
 
-    await user.save();
+    // await user.save();
 
     await sendWelcomeEmail(user.email, user.name);
 
