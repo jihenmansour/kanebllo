@@ -56,17 +56,17 @@ export const verifyEmail = async (req, res) => {
   try {
     const user = await User.findOne({
       verificationToken: code,
-      verificationTokenExpiresAt: {$gt: Date.now()}
+      verificationTokenExpiresAt: { $gt: Date.now() },
     });
 
-    if(code.length!==6){
-      throw new Error ("Code must be exactly 6 characters long")
+    if (code.length !== 6) {
+      throw new Error("Code must be exactly 6 characters long");
     }
-    
+
     if (!user) {
       throw new Error("Verification code is invalid or expired");
     }
-    
+
     user.isVerified = true;
     user.verificationToken = undefined;
     user.verificationTokenExpiresAt = undefined;
@@ -75,7 +75,7 @@ export const verifyEmail = async (req, res) => {
 
     await sendWelcomeEmail(user.email, user.name);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       user: {
         ...user._doc,
@@ -88,4 +88,48 @@ export const verifyEmail = async (req, res) => {
       message: error.message,
     });
   }
+};
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new Error("User does not exist");
+    }
+
+    const isPassword = await bcryptjs.compare(password, user.password);
+
+    if (!isPassword) {
+      throw new Error("Password is invalid");
+    }
+
+    generateTokenAndSetCookie(user._id, res);
+    user.lastLogin = new Date();
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      user: {
+        ...user._doc,
+        password: undefined,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const logout = (req, res) => {
+  res.clearCookie("token");
+
+  res.status(200).json({
+    success: true,
+    message: "Logout successfully",
+  });
 };

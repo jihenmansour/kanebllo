@@ -1,9 +1,31 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import FloatingTriangle from "../components/FloatingTriangle";
 import Input from "../components/Input";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store";
+import { login } from "../features/auth/authActions";
+import Spinner from "../components/Spinner";
 
 const LoginPage = () => {
+const [email, setEmail] = useState<string>("");
+const [password, setPassword] = useState<string>("");
+
+const navigate = useNavigate();
+
+const dispatch = useDispatch<AppDispatch>();
+const {error, loginSuccess, loading} = useSelector((state: RootState) => state.auth)
+
+useEffect(()=> {
+ if(loginSuccess) navigate('/')
+}, [navigate, loginSuccess])
+
+const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+e.preventDefault();
+dispatch(login({email, password}))
+
+}
   return (
     <div className="h-screen overflow-hidden relative flex items-center justify-center bg-gradient-to-r from-[#50A8A2] via-emerald-400 to-emerald-300">
       <FloatingTriangle size={"size-32"} delay={0} left={"10%"} />
@@ -32,10 +54,23 @@ const LoginPage = () => {
             Sign in by entering information below
           </p>
         </div>
-        <Input name="Email" />
-        <Input name="Password" />
+        <form onSubmit={handleLogin}>
+        <Input 
+        name="Email" 
+        onChange={(e)=> {
+          setEmail(e.target.value);
+          }}/>
+        <Input 
+        name="Password" 
+        type="password"
+        onChange={(e)=> {
+          setPassword(e.target.value);
+          }}/>
+          {error && <p className="text-red-600 mb-3">{error}</p>}
         <div className="flex flex-col items-center rounded-sm text-emerald-400 font-medium">
-          <button className="bg-white w-[80%] h-12 mb-3">Login</button>
+          <button className="bg-white w-[80%] h-12 mb-3">
+          {loading?<Spinner/> : "Login" } 
+          </button>
           <p className="text-white">
             Don't have an account? &nbsp;
             <Link to="/signup" className="text-white hover:underline">
@@ -43,6 +78,7 @@ const LoginPage = () => {
             </Link>
           </p>
         </div>
+        </form>
       </motion.div>
     </div>
   );
