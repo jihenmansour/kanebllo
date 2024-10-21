@@ -30,14 +30,13 @@ export declare interface loginInterface {
 }
 
 
-
 export declare interface cardInterface {
 task: { id: string; content: string };
 index: number;
 }
 
 export declare interface columnInterface {
-column: { id: string; title: string; cardIds: string[] };
+column: { id: string; title: string; color: string; cardIds: string[] };
 cards: { id: string; content: string }[];
 }
 
@@ -51,7 +50,8 @@ export declare interface boardInterface {
     columns: {
       [key: string]: {   
         id: string;    
-        title: string;   
+        title: string; 
+        color: string;  
         cardIds: string[]; 
       };
     };

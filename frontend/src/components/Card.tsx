@@ -3,7 +3,7 @@ import { Draggable } from "react-beautiful-dnd";
 
 const Card = ({ index, task }: cardInterface) => {
   return (
-    <Draggable draggableId={task.id} index={index}>
+    <Draggable draggableId={task.id} index={index} key={task.id}>
       {(provided) => (
         <div
         {...provided.draggableProps}

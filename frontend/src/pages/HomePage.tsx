@@ -8,7 +8,7 @@ const HomePage = () => {
   const {user} = useSelector((state: RootState) => state.auth);
 
   return (
-    <div className='bg-gray-100 w-full h-full m-0'>
+    <div className='bg-gray-100 w-full min-h-screen m-0'>
     <div className='flex flex-col'>
       <Navbar name='User Name' email='Kanbello.contact@gmail.com' />
       <div className='p-8'>

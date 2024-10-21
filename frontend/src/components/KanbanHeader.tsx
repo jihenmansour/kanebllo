@@ -15,9 +15,10 @@ const KanbanHeader = () => {
         <div className="flex gap-2">
         <motion.select
           id="projects"
+          defaultValue={'DEFAULT'}
           className="bg-gray-200 border border-white text-base font-semibold rounded-lg p-4 cursor-pointer outline-none"
         >
-          <option selected>Choose a project</option>
+          <option value='DEFAULT' disabled>Choose a project</option>
           <option value="US">United States</option>
           <option value="CA">Canada</option>
           <option value="FR">France</option>
